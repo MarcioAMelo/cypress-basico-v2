@@ -1,4 +1,4 @@
-/// <reference types="Cypress" />
+///<reference types="Cypress" />
 
 
 
@@ -17,7 +17,7 @@ describe('Central de atendimento ao cliente tat', function () {
         cy.get('#lastName').type('Melo')
         cy.get('#email').type('marcio@gmail.com')
         cy.get('#open-text-area').type(longText, {delay:0})
-        cy.get('.button[type="submit"]').click()
+        cy.contains('button','Enviar').click()
         cy.get('.success').should('be.visible')
 
     })
@@ -26,7 +26,7 @@ describe('Central de atendimento ao cliente tat', function () {
         cy.get('#lastName').type('Melo')
         cy.get('#email').type('marcio@gmail,com')
         cy.get('#open-text-area').type('Test',{delay:0})
-        cy.get('.button[type="submit"]').click()
+        cy.contains('button','Enviar').click()
         cy.get('.error').should('be.visible')
     })
     it('campo telefone continua vazio valor não numérico', ()=>{
@@ -40,29 +40,66 @@ describe('Central de atendimento ao cliente tat', function () {
         cy.get('#email').type('marcio@gmail.com', {delay:0})
         cy.get('#phone-checkbox').click()
         cy.get('#open-text-area').type('Test',{delay:0})
-        cy.get('.button[type="submit"]').click()
+        cy.contains('button','Enviar').click()
         cy.get('.error').should('be.visible')
     })
-    it.only('prenche e limpa os campos nome, sobrenome, email e telefone', ()=>{
+    it('prenche e limpa os campos nome, sobrenome, email e telefone', ()=>{
         cy.get('#firstName')
             .type('marcio')
             .clear()
             .should('have.value', '')
         cy.get('#lastName')
             .type('melo')
+            .should('have.value', 'melo')
             .clear()
             .should('have.value', '')
         cy.get('#email')
             .type('marcio@gmail.com')
+            .should('have.value','marcio@gmail.com')
             .clear()
             .should('have.value','')
-            cy.get('#open-text-area')
+        cy.get('#phone')  
+            .type('12346654564')
+            .should('have.value', '12346654564')
+            .clear()
+            .should('have.value','')  
+        cy.get('#open-text-area')
                 .type('teste,teste')
+                .should('have.value','teste,teste')
                 .clear()
                 .should('have.value', '')
     })
-
-
-
+    it('Exibe mensagem de erro ao submeter formulário sem campos obrigatórios', () =>{
+        cy.get('.button[type="submit"')
+        .click()
+        cy.get('.error')
+        .should('be.visible')
+        
+    })
+    it('prenche e envia formulário usando comando customizado',() =>{
+        cy.fillMandatoryFieldsAndSubmit()
+    })
+    it('Seleciona um produto (YouTube) por seu texto', function(){
+        cy.get('#product')
+            .select('YouTube')
+            .should('have.value', 'youtube')
+    })
+    it('Seleciona um produto (mentoria) pelo value', ()=>{
+        cy.get('#product')
+            .select('mentoria')
+            .should('have.value', 'mentoria')
+            
+    })
+    it('Seleciona um produto (blog) pelo índice', ()=>{
+        cy.get('#product')
+            .select(1)
+            .should('have.value', 'blog')
+    })
+    
+    it.only('Marca o tipo de atendimento feedback', ()=>{
+        cy.get('input[type = "radio"][value="feedback')
+            .check()
+            .should('have.value','feedback')
+    })
 
 })
